@@ -16,10 +16,12 @@ They can also be downloaded through the Arduino IDE library manager
 
 ##BLE -> sme
 Any character or string written by the Central device, on the writable attribute 0xFFF3,  is processed on the SME board. The board is able to process a full string as either authentication or instructions.
-	General String protocol : `<len> <type> <id> (optionnal) <remaining len> <char 1> <char 2> ... <char remaining len>`
-		Different types: 
-			'K', for "Key" (for authentication), 0x4b in hex
-			'!', for "Instruction" (when you send instrcutions to the device), 0x21 in hex
+
+General String protocol : `<len> <type> <id> (optionnal) <remaining len> <char 1> <char 2> ... <char remaining len>`
+	
+	Different types:
+		'K', for "Key" (for authentication), 0x4b in hex
+		'!', for "Instruction" (when you send instrcutions to the device), 0x21 in hex
 
 ##Authentication
 The Central device will first have to authenticate itself by sending an authentication message.
@@ -38,15 +40,19 @@ The Central device can send instructions to the SME Board using a predefined pro
 - Print sensor data on the Serial USB, if available (type 'P' for "Print", 0x50 in hex)
 - Send sensor data to the Central Bluetooth device (type 'S' for "Send", 0x53 in hex)
 - Write a string (up to 7 char) into the Payload (type 'W' for "Write", 0x57 in hex)
+
 There are multiple sensor data available :
 - Temperature (parameter 't' for "Temperature", 0x74 in hex)
 - Humidity (parameter 'h' for "Humidity", 0x68 in hex)
 - Pressure (parameter 'p' for "Pressure", 0x70 in hex)
+
 Instructions protocol : `<len> <21> <ID> <remaining len> <type 1> <param 1> <type 2> <param 2> ...`
+	
 	Instruction examples :
 		- displaying temperature on SerialUSB, with 0x50 as the ID  : `0x052103505074`
 		- sending pressure to Central Device, with 0x1B as the ID   : `0x0521031B5370`
 		- writing "Hello !" to payload, with 0xC8 as the ID         : `0x0C210AC8570748656c6c6f2021`
+	
 	Instructions can be combined, such as the following :
 		- displaying temperature, writing "Hello !" to payload and sending pressure, with 0xC8 as the ID :
 			`0x0F215074570748656c6c6f20215370`
@@ -54,16 +60,18 @@ Instructions protocol : `<len> <21> <ID> <remaining len> <type 1> <param 1> <typ
 ##Instructions reply
 The SME Board will reply differently to different instructions:
 Upon receiving an instruction using the valid ID, the SME board will always reply with the remaining number of instructions allowed for this ID
-	Remaining number of instructions protocol : <remaining number of instructions>
+
+Remaining number of instructions protocol : <remaining number of instructions>
 	Reply example, with 15 remaining messages : 0x0F
 					
 While processing the instructions, the SME Board will offer differents replies :
 - Display sensor data on SerialUSB reply protocol	: `no reply`
 - Send sensor data to Central Device protocol		: `<parameter><value>`
-		Example, with temp as parameter and 28 as value	: `0x741C`
+	Example, with temp as parameter and 28 as value	: `0x741C`
 - Write string to Payload reply protocol	: `<written length>` followed by `<written string>`
-		Example, with "Hello !" as string	: `0x07` followed by `0x48656c6c6f2021`
+	Example, with "Hello !" as string	: `0x07` followed by `0x48656c6c6f2021`
 
-**NOTICE:** In order to be properly stored as an uint8_t, Pressure is truncated.
+**NOTICE:**	In order to be properly stored as an uint8_t, Pressure is truncated.
 		Remember to add +1000 to the value sent to the Central Device
+		
 **NOTICE:** The Host needs to subscribe to 0xFFF4 attribute to get notified of the response.
