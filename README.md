@@ -1,7 +1,18 @@
 # smeBlueTest
 
-A small project demonstrating a BLE Bidirectional communication between a PC/Smartphone App (Central BLE device)
+A small Arduino project demonstrating a BLE Bidirectional communication between a PC/Smartphone App (Central BLE device)
 and the SmartEveryting (SME) Board (Peripheral BLE) involving simple authentication and instructions processing.
+You can use (for example) use the BlueLight Explorer app for testing purposes.
+
+This project requires the following libraries :
+	- Arduino.h
+	- Wire.h
+	- HTS221.h
+	- LPS25H.h
+	- cc2541.h
+
+The SmartEverything libraries can be found and downloaded here : https://github.com/ameltech
+They can also be downloaded through the Arduino IDE library manager
 
 - BLE -> sme :		Any character or string written by the Central device, on the writable attribute 0xFFF3, 
 					is processed on the SME board. The board is able to process a full string as either authentication or instructions.
