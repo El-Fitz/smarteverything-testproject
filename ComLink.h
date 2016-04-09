@@ -1,7 +1,7 @@
 #ifndef COMLINK_H
 # define COMLINK_H
 # define KEY_SIZE 6
-# define SECURITY_RESET_TIME 3000
+# define SECURITY_RESET_TIME 60000
 
 # include "BlueTest.h"
 

@@ -77,7 +77,6 @@ Security  safetyFirst;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  
   SerialUSB.begin(115200);
   Wire.begin();
   smeHumidity.begin();
@@ -87,7 +86,7 @@ void setup() {
   ft_initDownLink;
   ft_initPayload(NULL);
   randomSeed(analogRead(0));
-  for (int wait = 0; !SerialUSB && wait < 10; wait++)
+  for (int wait = 0; !SerialUSB && wait < 30; wait++)
     ft_wasteTime(1000);
   if (!SerialUSB)
     ledYellowOneLight(LOW);
