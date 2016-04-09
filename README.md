@@ -14,13 +14,14 @@ This project requires the following libraries :
 The SmartEverything libraries can be found and downloaded here : https://github.com/ameltech.
 They can also be downloaded through the Arduino IDE library manager
 
-- BLE -> sme :		Any character or string written by the Central device, on the writable attribute 0xFFF3, 
-			is processed on the SME board. The board is able to process a full string as either authentication or instructions.
+##BLE -> sme
+	Any character or string written by the Central device, on the writable attribute 0xFFF3,  is processed on the SME board. The board is able to process a full string as either authentication or instructions.
 				General String protocol : <len> <type> <id> (optionnal) <remaining len> <char 1> <char 2> ... <char remaining len>				Different types: 
 						'K', for "Key" (for authentication), 0x4b in hex
 						'!', for "Instruction" (when you send instrcutions to the device), 0x21 in hex
 
-- Authentication:	The Central device will first have to authenticate itself by sending an authentication message.
+##Authentication
+The Central device will first have to authenticate itself by sending an authentication message.
 			The authentication message should say how many instructions or messages will be sent by the Central Device.
 			All further messages and instructions will require a new authentication.
 			The key's length is defined by the KEY_SIZE macro in BlueTest.h
@@ -32,7 +33,8 @@ They can also be downloaded through the Arduino IDE library manager
 				Authentication reply protocol : <nb of msg><ID>
 				Authentication reply example for the previous authentication msg example, with 42 as the ID : 0x022A
 
-- Instructions:		The Central device can send instructions to the SME Board using a predefined protocol.
+##Instructions
+The Central device can send instructions to the SME Board using a predefined protocol.
 			The instruction messages allow to perfom the following actions :
 				- Print sensor data on the Serial USB, if available (type 'P' for "Print", 0x50 in hex)
 				- Send sensor data to the Central Bluetooth device (type 'S' for "Send", 0x53 in hex)
@@ -51,7 +53,8 @@ They can also be downloaded through the Arduino IDE library manager
 					- displaying temperature, writing "Hello !" to payload and sending pressure, with 0xC8 as the ID :
 						0x0F215074570748656c6c6f20215370
 
-- Instructions reply: 	The SME Board will reply differently to different instructions:
+##Instructions reply
+The SME Board will reply differently to different instructions:
 			Upon receiving an instruction using the valid ID, the SME board will always reply
 			with the remaining number of instructions allowed for this ID
 				Remaining number of instructions protocol : <remaining number of instructions>
