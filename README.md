@@ -11,7 +11,7 @@ This project requires the following libraries :
 - LPS25H.h
 - cc2541.h
 
-The SmartEverything libraries can be found and downloaded here : https://github.com/ameltech
+The SmartEverything libraries can be found and downloaded here : https://github.com/ameltech.
 They can also be downloaded through the Arduino IDE library manager
 
 - BLE -> sme :		Any character or string written by the Central device, on the writable attribute 0xFFF3, 
