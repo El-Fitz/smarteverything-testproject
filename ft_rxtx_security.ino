@@ -24,7 +24,6 @@ void    ft_checkStatus (void) {
 void    ft_establishComLink(void) {
   char    *key = NULL;
   uint8_t id;
-  char    response[2];
 
   ft_resetSecurity();
   if (!ft_getStr())
@@ -38,13 +37,20 @@ void    ft_establishComLink(void) {
         return ;
     safetyFirst.nbmsg = downLink.msg[0];
     safetyFirst.id = random(0, 256);
-    response[0] = safetyFirst.nbmsg;
-    response[1] = safetyFirst.id;
-    smeBle.write(response, 2);
+    authResponse[0] = 0x65;
+    authResponse[1] = safetyFirst.nbmsg;
+    authResponse[2] = safetyFirst.id;
+    smeBle.write(authResponse, 3);
     ledRedLight(false);
     ledGreenLight(true);
     referenceTime = millis() / 1000;
     }
+  else {
+    authResponse[0] = 0x65;
+    authResponse[1] = 0x00;
+    authResponse[2] = 0x00;
+    smeBle.write(authResponse, 3);
+  }
   ft_strfree(downLink.msg);
   ft_strfree(key);
 }

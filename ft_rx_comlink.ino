@@ -18,23 +18,19 @@ uint8_t ft_getStr(void) {
 
 void  ft_getInstruction(void) {
   char          *instruction = NULL;
-  char          *test = NULL;
 
   if (!ft_getStr())
     return ;
-  SerialUSB.println("Entering getInstruction");
-  SerialUSB.print("Type : ");
-  SerialUSB.print(downLink.type, HEX);
-  SerialUSB.print("\tInstruction : ");
-  ft_USBputStr(downLink.msg);
   if (downLink.type == 0x21 && downLink.msg[0] == safetyFirst.id) {
-    if (safetyFirst.nbmsg > 0)
+    if (safetyFirst.nbmsg > 0 && safetyFirst.nbmsg != 0xff)
       safetyFirst.nbmsg--;
+    referenceTime = millis() / 1000;
     smeBle.writeChar(safetyFirst.nbmsg);
+    smeBle.writeChar(0x21);
     instruction = ft_strsub(downLink.msg, 1, 0);
     smeBle.write(instruction, strlen(instruction));
+    ft_getData();
     for (int i = 0; i < strlen(instruction);) {
-      ft_getData();
       switch (instruction[i]) {
         case 0x53:
           ft_bleSendData(instruction[i + 1]);
@@ -48,6 +44,10 @@ void  ft_getInstruction(void) {
           ft_write(ft_strsub(instruction, i + 2, instruction[i + 1]));
           i += instruction[i + 1] + 2;
           break;
+        case 0x44:
+          ft_resetSecurity();
+          i++;
+          break;
         default :
           i++;
       }
@@ -58,5 +58,5 @@ void  ft_getInstruction(void) {
     }
     ft_strfree(instruction);
   }
-  ft_strfree(downLink.msg);
+  ft_resetDownLink();
 }

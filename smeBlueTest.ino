@@ -70,6 +70,7 @@ char      bounce = 0;
 uint8_t   printed = 0;
 long      referenceTime;
 long      sendTime;
+char      authResponse[3];
 Payload   payload;
 Coms      downLink;
 Security  safetyFirst;
@@ -106,5 +107,9 @@ void loop()
   if ((millis() - 1000 * referenceTime) > SECURITY_RESET_TIME && (safetyFirst.id != 0 || safetyFirst.nbmsg != 0)) {
     referenceTime = millis() / 1000;
     ft_resetSecurity();
+    authResponse[0] = 0x65;
+    authResponse[1] = 0x00;
+    authResponse[2] = 0x00;
+    smeBle.write(authResponse, 3);
   }
 }
