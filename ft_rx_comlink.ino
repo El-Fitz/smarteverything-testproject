@@ -32,6 +32,11 @@ void  ft_getInstruction(void) {
     ft_getData();
     for (int i = 0; i < strlen(instruction);) {
       switch (instruction[i]) {
+        case 0x70:
+          safetyFirst.nbmsg++;
+          smeBle.writeChar(instruction[i]);
+          i += 1;
+          break;
         case 0x53:
           ft_bleSendData(instruction[i + 1]);
           i += 2;
@@ -50,6 +55,7 @@ void  ft_getInstruction(void) {
           break;
         default :
           i++;
+          break;
       }
     }
     if (printed == 1) { 
