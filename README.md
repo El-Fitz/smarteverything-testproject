@@ -31,7 +31,7 @@ The key's length is defined by the KEY_SIZE macro in BlueTest.h
 - Authentication protocol : `<len> <4b> <nb of msg> <char 1> <char 2> <char 3> ... <char KEY_SIZE>`
 - Authentication msg example, for 2 messages, and with a key such as "111111" : `0x094b02010101010101`
 
-The SME Board will reply to a valid authentication message using the right key, confirming the number of instructions and delivering a random ID between 0 and 255 (0x00 and 0xFF in hex)
+The SME Board will reply to a valid authentication message using the right key, using "A" (for "Authentication") as message type, confirming the number of instructions and delivering a random ID between 0 and 255 (0x00 and 0xFF in hex)
 - Authentication reply protocol : `<0x65><nb of msg><ID>`
 - Authentication reply example for the previous authentication msg example, with 42 as the ID : `0x65022A`
 
@@ -70,6 +70,7 @@ Remaining number of instructions protocol : <remaining number of instructions>
 	Reply example, with 15 remaining messages : 0x0F
 					
 While processing the instructions, the SME Board will offer differents replies :
+- Deauthenticate					:  `0x650000`
 - Display sensor data on SerialUSB reply protocol	: `no reply`
 - Send sensor data to Central Device protocol		: `<parameter><value>`
 	Example, with temp as parameter and 28 as value	: `0x741C`
