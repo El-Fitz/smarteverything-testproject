@@ -83,8 +83,9 @@ While processing the instructions, the SME Board will offer differents replies :
 **NOTICE:** The Host needs to subscribe to 0xFFF4 attribute to get notified of the response.
 
 
-##Future Updates
+##Future Updates to be expected
+- Allow to authenticate withouth key (using button1). Similar to usual Bluetooth pairing
 - Send payload through SigFox network
-- Allow to authenticate withouth key (using button)
+- Sleep / low power function to save power (using SLEEP_MODE_PWR_DOWN with 8 seconds WatchDog Timers, while allowing wake up from Bluetooth interrupt). Might be activated by default or by pressing button2
 - Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
 - Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
