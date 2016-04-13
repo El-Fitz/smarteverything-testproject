@@ -32,14 +32,19 @@ The key's length is defined by the KEY_SIZE macro in BlueTest.h
 - Authentication msg example, for 2 messages, and with a key such as "111111" : `0x094b02010101010101`
 
 The SME Board will reply to a valid authentication message using the right key, confirming the number of instructions and delivering a random ID between 0 and 255 (0x00 and 0xFF in hex)
-- Authentication reply protocol : `<nb of msg><ID>`
-- Authentication reply example for the previous authentication msg example, with 42 as the ID : `0x022A`
+- Authentication reply protocol : `<0x65><nb of msg><ID>`
+- Authentication reply example for the previous authentication msg example, with 42 as the ID : `0x65022A`
+
+The SME Board will reply to a valid authentication message using a wrong key
+- Authentication reply for valid authentication msg using wrong key : `0x650000`
 
 ##Instructions
 The Central device can send instructions to the SME Board using a predefined protocol. The instruction messages allow to perfom the following actions :
 - Print sensor data on the Serial USB, if available (type 'P' for "Print", 0x50 in hex)
 - Send sensor data to the Central Bluetooth device (type 'S' for "Send", 0x53 in hex)
 - Write a string (up to 7 char) into the Payload (type 'W' for "Write", 0x57 in hex)
+- Deauthenticate(type 'D' for "Deauthenticate", 0x44 in hex)
+- Ping, to maintain "session" (type "p" for "ping", 0x70 in hex)
 
 There are multiple sensor data available :
 - Temperature (parameter 't' for "Temperature", 0x74 in hex)
@@ -75,3 +80,10 @@ While processing the instructions, the SME Board will offer differents replies :
 		Remember to add +1000 to the value sent to the Central Device
 		
 **NOTICE:** The Host needs to subscribe to 0xFFF4 attribute to get notified of the response.
+
+
+##Future Updates
+- Send payload through SigFox network
+- Allow to authenticate withouth key (using button)
+- Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
+- Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
