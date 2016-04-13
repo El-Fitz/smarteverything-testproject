@@ -75,3 +75,10 @@ While processing the instructions, the SME Board will offer differents replies :
 		Remember to add +1000 to the value sent to the Central Device
 		
 **NOTICE:** The Host needs to subscribe to 0xFFF4 attribute to get notified of the response.
+
+
+##Future Updates
+- Send payload through SigFox network
+- Allow to authenticate withouth key (using button)
+- Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
+- Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
