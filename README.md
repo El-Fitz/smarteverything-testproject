@@ -42,6 +42,7 @@ The SME Board will reply to a valid authentication message using a wrong key
 The Central device can send instructions to the SME Board using a predefined protocol. The instruction messages allow to perfom the following actions :
 - Print sensor data on the Serial USB, if available (type 'P' for "Print", 0x50 in hex)
 - Send sensor data to the Central Bluetooth device (type 'S' for "Send", 0x53 in hex)
+- Send sensor data through SigFox (type 'E' for "Emit", 0x45 in hex)
 - Write a string (up to 7 char) into the Payload (type 'W' for "Write", 0x57 in hex)
 - Deauthenticate(type 'D' for "Deauthenticate", 0x44 in hex)
 - Ping, to maintain "session" (type "p" for "ping", 0x70 in hex)
