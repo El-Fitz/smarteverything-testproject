@@ -22,9 +22,22 @@ int initFinish = 1;
     } while (initFinish!=3);
 }
 
-void ft_sigFoxSendPayload() {
+void ft_sigFoxSendPayload(void) {
+  char  sigFoxPayload[sizeof(payload)];
+  int   payloadLen;
+  int   strLen;
+  
+  sigFoxPayload[0] = payload.humidity;
+  sigFoxPayload[1] = payload.temp;
+  sigFoxPayload[2] = payload.pressure;
+
+  payloadLen = sizeof(payload.str) / sizeof(payload.str[0]);
+  strLen = sizeof(sigFoxPayload) / sizeof(sigFoxPayload[0]);
+  for (int i = 0; i < payloadLen && i < strLen; i++)
+    sigFoxPayload[i + 3] = payload.str[i];
   sfxWakeup();
-  ft_wasteTime(10);
+  ft_wasteTime(20);
+  sfxAntenna.sfxSendData(sigFoxPayload, strlen((char*)sigFoxPayload));
   sigFoxAnswerAck = false;
 }
 

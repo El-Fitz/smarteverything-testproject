@@ -21,19 +21,15 @@ void  ft_getInstruction(void) {
 
   if (!ft_getStr())
     return ;
-  if (downLink.type == 0x21 && downLink.msg[0] == safetyFirst.id) {
-    if (safetyFirst.nbmsg > 0 && safetyFirst.nbmsg != 0xff)
-      safetyFirst.nbmsg--;
+  if (downLink.type == 0x21 && (!safetyFirst.authIsActive || ft_checkID())) {
     referenceTime = millis() / 1000;
-    smeBle.writeChar(safetyFirst.nbmsg);
     smeBle.writeChar(0x21);
-    instruction = ft_strsub(downLink.msg, 1, 0);
+    instruction = ft_strsub(downLink.msg, safetyFirst.idLen, 0);
     smeBle.write(instruction, strlen(instruction));
     ft_getData();
     for (int i = 0; i < strlen(instruction);) {
       switch (instruction[i]) {
         case 0x70:
-          safetyFirst.nbmsg++;
           smeBle.writeChar(instruction[i]);
           i += 1;
           break;

@@ -63,15 +63,22 @@
    Author: Thomas Leger
 
 */
-
+# include <Wire.h>
+# include <Arduino.h>
+# include <SME_basic.h>
+# include <HTS221.h>
+# include <LPS25H.h>
+# include <SmeSFX.h>
+# include <cc2541.h>
 # include "BlueTest.h"
 
 char      bounce = 0;
 uint8_t   printed = 0;
 long      referenceTime;
+long      noAuthRefTime;
 bool      sendPayload = false;
 long      sendTime;
-char      authResponse[3];
+char      authResponse[1 + (ID_SIZE / 8)];
 bool      sigFoxAnswerReady;
 bool      sigFoxAnswerAck;
 Payload   payload;
@@ -90,7 +97,7 @@ void setup() {
   ft_initDownLink;
   ft_initPayload(NULL);
   randomSeed(analogRead(0));
-  for (int wait = 0; !SerialUSB && wait < 30; wait++)
+  for (int wait = 0; !SerialUSB && wait < 60; wait++)
     ft_wasteTime(1000);
   if (!SerialUSB)
     ledYellowOneLight(LOW);
@@ -102,22 +109,40 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() 
 {
-  if (safetyFirst.id == 0 || safetyFirst.nbmsg <= 0)
+  if (isButtonOnePressed()) {
+    safetyFirst.authIsActive = false;
+    safetyFirst.idLen = 0;
+    noAuthRefTime = millis() / 1000;
+  }
+  if (isButtonTwoPressed())
+    sendPayload == true;
+  if (!safetyFirst.authIsActive) {
+    ledRedLight(false);
+    ledGreenLight(false);
+    ledBlueLight(true);
+  } else {
+    if (!safetyFirst.authenticated) {
+      ledRedLight(true);
+      ledGreenLight(false);
+    }
+    ledBlueLight(false);
+  }
+  if (!safetyFirst.authenticated && safetyFirst.authIsActive)
     ft_establishComLink();
-  if (safetyFirst.id != 0 && safetyFirst.nbmsg != 0)
+  else if (safetyFirst.authenticated || !safetyFirst.authIsActive)
     ft_getInstruction();
-  if ((sigFoxAnswerReady = sfxAntenna.hasSfxAnswer()))
-    
-  ft_checkStatus();
-  if ((millis() - 1000 * referenceTime) > SECURITY_RESET_TIME && (safetyFirst.id != 0 || safetyFirst.nbmsg != 0)) {
+  if (sigFoxAnswerReady = sfxAntenna.hasSfxAnswer())
+    sigFoxAnswerAck = true;
+  if (safetyFirst.authenticated && safetyFirst.authIsActive && (millis() - 1000 * referenceTime) > SECURITY_RESET_TIME * 1000) {
+    SerialUSB.println("Security reset time reached");
     referenceTime = millis() / 1000;
     ft_resetSecurity();
-    authResponse[0] = 0x65;
-    authResponse[1] = 0x00;
-    authResponse[2] = 0x00;
-    smeBle.write(authResponse, 3);
+    smeBle.write(authResponse, 1 + (ID_SIZE / 8));
+  } else if (!safetyFirst.authIsActive && (millis() - 1000 * noAuthRefTime) > NO_AUTH_RESET_TIME * 60 * 1000) {
+    SerialUSB.println("No auth reset time reached");
+    ft_resetSecurity();
   }
-  if ((millis() - 1000 * referenceTime) > SIGFOX_SEND_TIME && sendPayload == true) {
+  if ((millis() - 1000 * sendTime) > SIGFOX_SEND_TIME * 60 * 1000 && sendPayload == true) {
     ft_sigFoxSendPayload();
     sendPayload = false;
     referenceTime = millis() / 1000;

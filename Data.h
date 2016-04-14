@@ -1,8 +1,6 @@
 #ifndef DATA_H
 # define DATA_H
 
-# include "BlueTest.h"
-
 typedef struct
 {
   uint8_t     humidity;

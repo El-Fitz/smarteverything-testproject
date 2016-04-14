@@ -42,3 +42,8 @@ uint8_t ft_getMsgSize(void) {
     return (0);
   return (1);
 }
+
+void    ft_getKey(void) {
+  for (int i = 0; i < KEY_SIZE; i++)
+    downLink.key[i] = downLink.msg[i];
+}

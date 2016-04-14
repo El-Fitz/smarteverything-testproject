@@ -1,56 +1,76 @@
 #include "ComLink.h"
 
 void    ft_initSecurity (void) {
-  safetyFirst.id = 0;
-  safetyFirst.nbmsg = 0;
+  safetyFirst.authResponse[0] = 0x65;
+  for (int i = 0; i < ID_SIZE / 8; i++) {
+    safetyFirst.id[i] = 0x00;
+    safetyFirst.authResponse[i + 1];
+  } 
   for (int i = 0; i < KEY_SIZE; i++)
     safetyFirst.key[i] = 1;
+  safetyFirst.maxID = (pow(2, ID_SIZE)) - 1;
+  safetyFirst.idLen = ID_SIZE / 8;
+  safetyFirst.authIsActive = true;
+  safetyFirst.authenticated = false;
+  noAuthRefTime = 0;
   ledGreenLight(false);
   ledRedLight(true);
 }
 
 void    ft_resetSecurity(void) {
-  safetyFirst.id = 0;
-  safetyFirst.nbmsg = 0;
+  safetyFirst.authResponse[0] = 0x65;
+  for (int i = 0; i < safetyFirst.idLen; i++) {
+    safetyFirst.id[i] = 0x00;
+    safetyFirst.authResponse[i + 1];
+  }
   ledRedLight(true);
   ledGreenLight(false);
+  safetyFirst.authIsActive = true;
+  safetyFirst.authenticated = false;
+  noAuthRefTime = 0;
+  SerialUSB.println("reseting security");
 }
 
-void    ft_checkStatus (void) {
-  if (safetyFirst.nbmsg <= 0)
-    ft_initSecurity();
+void    ft_getIDArray(uint64_t id) {
+  uint64_t  mask = 0xFF;
+  uint8_t   power = 0;
+  
+  for (int i = 0; i < safetyFirst.idLen; i++) {
+    safetyFirst.id[i] = (mask & id) >> 8 * power;
+    power = pow(2, i);
+    mask = mask << 8;
+  }
+}
+
+bool    ft_checkID(void) {
+  for (int i = 0; i < downLink.len && i < safetyFirst.idLen; i++)
+    if (downLink.msg[i] != safetyFirst.id[i])
+      return false;
+    return true;
 }
 
 void    ft_establishComLink(void) {
-  char    *key = NULL;
-  uint8_t id;
-
-  ft_resetSecurity();
+  uint64_t id;
+  
   if (!ft_getStr())
     return ;
-  if (downLink.type == 0x4b && !safetyFirst.id) {
-    key = ft_strsub(downLink.msg, 1, KEY_SIZE);
-    if (strlen(key) != KEY_SIZE)
-      return ;
+  ft_resetSecurity();
+  if (downLink.type == 0x4b && !safetyFirst.authenticated) {
+    ft_getKey();
     for (int i = 0; i < KEY_SIZE; i++)
-      if (key[i] != safetyFirst.key[i])
+      if (downLink.key[i] != safetyFirst.key[i])
         return ;
-    safetyFirst.nbmsg = downLink.msg[0];
-    safetyFirst.id = random(0, 256);
+    id = random(0, safetyFirst.maxID);
     authResponse[0] = 0x65;
-    authResponse[1] = safetyFirst.nbmsg;
-    authResponse[2] = safetyFirst.id;
-    smeBle.write(authResponse, 3);
+    for (int i = 0; safetyFirst.idLen; i++)
+      authResponse[i + 1] = safetyFirst.id[i];
+    smeBle.write(authResponse, 1 + (ID_SIZE / 8));
     ledRedLight(false);
     ledGreenLight(true);
     referenceTime = millis() / 1000;
     }
   else {
-    authResponse[0] = 0x65;
-    authResponse[1] = 0x00;
-    authResponse[2] = 0x00;
-    smeBle.write(authResponse, 3);
+    smeBle.write(authResponse, 1 + (ID_SIZE / 8));
   }
   ft_strfree(downLink.msg);
-  ft_strfree(key);
 }
