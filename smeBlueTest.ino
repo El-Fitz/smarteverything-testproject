@@ -69,20 +69,23 @@
 char      bounce = 0;
 uint8_t   printed = 0;
 long      referenceTime;
+bool      sendPayload = false;
 long      sendTime;
 char      authResponse[3];
+bool      sigFoxAnswerReady;
+bool      sigFoxAnswerAck;
 Payload   payload;
 Coms      downLink;
 Security  safetyFirst;
-
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   SerialUSB.begin(115200);
   Wire.begin();
+  smeBle.begin();
+  sfxAntenna.begin();
   smeHumidity.begin();
   smePressure.begin();
-  smeBle.begin();
   ft_initSecurity();
   ft_initDownLink;
   ft_initPayload(NULL);
@@ -103,6 +106,8 @@ void loop()
     ft_establishComLink();
   if (safetyFirst.id != 0 && safetyFirst.nbmsg != 0)
     ft_getInstruction();
+  if ((sigFoxAnswerReady = sfxAntenna.hasSfxAnswer()))
+    
   ft_checkStatus();
   if ((millis() - 1000 * referenceTime) > SECURITY_RESET_TIME && (safetyFirst.id != 0 || safetyFirst.nbmsg != 0)) {
     referenceTime = millis() / 1000;
@@ -111,5 +116,10 @@ void loop()
     authResponse[1] = 0x00;
     authResponse[2] = 0x00;
     smeBle.write(authResponse, 3);
+  }
+  if ((millis() - 1000 * referenceTime) > SIGFOX_SEND_TIME && sendPayload == true) {
+    ft_sigFoxSendPayload();
+    sendPayload = false;
+    referenceTime = millis() / 1000;
   }
 }

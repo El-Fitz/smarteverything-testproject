@@ -6,6 +6,7 @@
 # include <Arduino.h>
 # include <HTS221.h>
 # include <LPS25H.h>
+# include <SmeSFX.h>
 # include "cc2541.h"
 # include "ComLink.h"
 # include "Data.h"

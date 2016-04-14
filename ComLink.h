@@ -1,6 +1,7 @@
 #ifndef COMLINK_H
 # define COMLINK_H
 # define KEY_SIZE 6
+# define SIGFOX_SEND_TIME 600000
 # define SECURITY_RESET_TIME 60000
 
 # include "BlueTest.h"
@@ -19,6 +20,7 @@ typedef struct
   char      *msg;
 }           Coms;
 
+void        ft_sigFoxConfig(void);
 void        ft_initSecurity (void);
 void        ft_initDownLink (void);
 void        ft_resetDownLink (void);

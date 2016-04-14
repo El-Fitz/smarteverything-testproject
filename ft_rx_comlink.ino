@@ -53,6 +53,9 @@ void  ft_getInstruction(void) {
           ft_resetSecurity();
           i++;
           break;
+        case 0x45:
+          sendPayload = true;
+          break;
         default :
           i++;
           break;
