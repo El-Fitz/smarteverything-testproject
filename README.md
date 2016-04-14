@@ -7,8 +7,10 @@ You can use (for example) use the BlueLight Explorer app for testing purposes.
 This project requires the following libraries :
 - Arduino.h
 - Wire.h
+- SME_basic.h
 - HTS221.h
 - LPS25H.h
+- SmeSFX.h
 - cc2541.h
 
 The SmartEverything libraries can be found and downloaded here : https://github.com/ameltech.
@@ -37,6 +39,10 @@ The SME Board will reply to a valid authentication message using the right key, 
 
 The SME Board will reply to a valid authentication message using a wrong key
 - Authentication reply for valid authentication msg using wrong key : `0x650000`
+
+
+NOTICE: Pressing buttonOne will light the RGB LED in Blue and remove the need for authenticaton for a predefined time.
+Default time is 60 minutes (1 hour). If authentication is deactivated, do not send an authentication message or an ID in your instruction message. It will just, well... fail.
 
 ##Instructions
 The Central device can send instructions to the SME Board using a predefined protocol. The instruction messages allow to perfom the following actions :
