@@ -96,3 +96,5 @@ While processing the instructions, the SME Board will send differents replies :
 - Sleep / low power function to save power (using SLEEP_MODE_PWR_DOWN with 8 seconds WatchDog Timers, while allowing wake up from Bluetooth interrupt). Might be activated by default or by pressing button2
 - Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
 - Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
+- Encryption of the SigFox payload, most likely through a stream cypher algorithm in order to maintain the payload's size
+- Extend encryption to the Sigfox Downlink
