@@ -4,13 +4,7 @@
   Author: Thomas Leger
 
 */
-# include <Wire.h>
-# include <Arduino.h>
-# include <SME_basic.h>
-# include <HTS221.h>
-# include <LPS25H.h>
-# include <SmeSFX.h>
-# include <cc2541.h>
+
 # include "BlueTest.h"
 
 char      bounce = 0;
@@ -30,8 +24,8 @@ Security  safetyFirst;
 void setup() {
   SerialUSB.begin(115200);
   Wire.begin();
-  smeBle.begin();
   sfxAntenna.begin();
+  smeBle.begin();
   smeHumidity.begin();
   smePressure.begin();
   ft_initSecurity();
@@ -45,6 +39,7 @@ void setup() {
   else
     SerialUSB.println("Nothing will be printed on the console unless asked otherwise");
   ledYellowTwoLight(LOW);
+  sendTime = 0;
 }
 
 // the loop function runs over and over again forever
@@ -83,6 +78,6 @@ void loop()
   if ((millis() - 1000 * sendTime) > SIGFOX_SEND_TIME * 60 * 1000 && sendPayload == true) {
     ft_sigFoxSendPayload();
     sendPayload = false;
-    referenceTime = millis() / 1000;
+    sendTime = millis() / 1000;
   }
 }

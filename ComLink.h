@@ -1,15 +1,10 @@
 #ifndef COMLINK_H
 # define COMLINK_H
-// Session key connection size, in bytes
-# define KEY_SIZE 6
-// Random session ID size, in bits
-# define ID_SIZE 32
-// SigFox sending interval, IN MINUTES
-# define SIGFOX_SEND_TIME 10
-// Inactivity period for automatic Deauthentication, IN MINUTES
-# define SECURITY_RESET_TIME 1
-// Automatic end of no_auth mode (press button ONE), IN MINUTES
-# define NO_AUTH_RESET_TIME 1
+# define KEY_SIZE 6             // Session key connection size, in bytes
+# define ID_SIZE 32             // Random session ID size, in bits
+# define SIGFOX_SEND_TIME 10    // SigFox sending interval, IN MINUTES
+# define SECURITY_RESET_TIME 1  // Inactivity period for automatic Deauthentication, IN MINUTES
+# define NO_AUTH_RESET_TIME 60   // Automatic end of no_auth mode (press button ONE), IN MINUTES
 
 typedef struct
 {

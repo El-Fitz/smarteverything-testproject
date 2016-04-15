@@ -30,7 +30,6 @@ void ft_sigFoxSendPayload(void) {
   sigFoxPayload[0] = payload.humidity;
   sigFoxPayload[1] = payload.temp;
   sigFoxPayload[2] = payload.pressure;
-
   payloadLen = sizeof(payload.str) / sizeof(payload.str[0]);
   strLen = sizeof(sigFoxPayload) / sizeof(sigFoxPayload[0]);
   for (int i = 0; i < payloadLen && i < strLen; i++)

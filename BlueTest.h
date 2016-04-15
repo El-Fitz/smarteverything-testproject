@@ -1,5 +1,12 @@
 #ifndef BLUETEST_H
 # define BLUETEST_H
+# include <Wire.h>
+# include <Arduino.h>
+# include <SME_basic.h>
+# include <HTS221.h>
+# include <LPS25H.h>
+# include <SmeSFX.h>
+# include <cc2541.h>
 # include "ComLink.h"
 # include "Data.h"
 
