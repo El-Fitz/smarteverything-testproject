@@ -30,19 +30,22 @@ The Central device will first have to authenticate itself by sending an authenti
 The authentication message should say how many instructions or messages will be sent by the Central Device.
 All further messages and instructions will require a new authentication.
 The key's length is defined by the KEY_SIZE macro in BlueTest.h
-- Authentication protocol : `<len> <4b> <nb of msg> <char 1> <char 2> <char 3> ... <char KEY_SIZE>`
-- Authentication msg example, for 2 messages, and with a key such as "111111" : `0x094b02010101010101`
+- Authentication protocol : `<len> <4b> <char 1> <char 2> <char 3> ... <char KEY_SIZE>`
+- Authentication msg example, for 2 messages, and with a key such as "111111" : `0x084b010101010101`
 
-The SME Board will reply to a valid authentication message using the right key, using "A" (for "Authentication") as message type, confirming the number of instructions and delivering a random ID between 0 and 255 (0x00 and 0xFF in hex)
-- Authentication reply protocol : `<0x65><nb of msg><ID>`
-- Authentication reply example for the previous authentication msg example, with 42 as the ID : `0x65022A`
+The SME Board will reply to a valid authentication message using the right key, using "A" (for "Authentication") as message type, confirming the number of instructions and delivering a random unsigned ID of ID_SIZE bits, defined in ComLink.h
+For ID_SIZE == 32, it's between 0 and 4,294,967,295 (0x00 and 0xFFFFFFFF in hex)
+- Authentication reply protocol : `<0x65><ID 1/ (ID_SIZE / 8)><ID 2/ (ID_SIZE / 8)><ID 3/ (ID_SIZE / 8)><ID 4/ (ID_SIZE / 8)>`
+- Authentication reply example for the previous authentication msg example, with 42 as the ID : `0x650000002A`
+- Why (ID_SIZE / 8) ? Because the ID is sent as uint8_t array... so a bytes array. And ID_SIZE is the size in bits.
 
 The SME Board will reply to a valid authentication message using a wrong key
-- Authentication reply for valid authentication msg using wrong key : `0x650000`
+- Authentication reply for valid authentication msg using wrong key : `0x6500000000`
 
-
+NOTICE: Behaviour has yet to be defined for an ID_SIZE value that isn't a multiple of 8 (full bytes, remember), and a power of 2
 NOTICE: Pressing buttonOne will light the RGB LED in Blue and remove the need for authenticaton for a predefined time.
 Default time is 60 minutes (1 hour). If authentication is deactivated, do not send an authentication message or an ID in your instruction message. It will just, well... fail.
+
 
 ##Instructions
 The Central device can send instructions to the SME Board using a predefined protocol. The instruction messages allow to perfom the following actions :
@@ -71,12 +74,9 @@ Instructions protocol : `<len> <21> <ID> <remaining len> <type 1> <param 1> <typ
 
 ##Instructions reply
 The SME Board will reply differently to different instructions:
-Upon receiving an instruction using the valid ID, the SME board will always reply with the remaining number of instructions allowed for this ID
-
-Remaining number of instructions protocol : <remaining number of instructions>
-	Reply example, with 15 remaining messages : 0x0F
+Upon receiving an instruction using the valid ID, the SME board will always reply with a confirmation of the instruction, as well as...
 					
-While processing the instructions, the SME Board will offer differents replies :
+While processing the instructions, the SME Board will send differents replies :
 - Deauthenticate					:  `0x650000`
 - Display sensor data on SerialUSB reply protocol	: `no reply`
 - Send sensor data to Central Device protocol		: `<parameter><value>`
@@ -91,8 +91,8 @@ While processing the instructions, the SME Board will offer differents replies :
 
 
 ##Future Updates to be expected
-- Allow to authenticate withouth key (using button1). Similar to usual Bluetooth pairing
-- Send payload through SigFox network
+- DONE: Allow to authenticate withouth key (using button1). Similar to usual Bluetooth pairing
+- LIKELY DONE: Send payload through SigFox network
 - Sleep / low power function to save power (using SLEEP_MODE_PWR_DOWN with 8 seconds WatchDog Timers, while allowing wake up from Bluetooth interrupt). Might be activated by default or by pressing button2
 - Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
 - Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
