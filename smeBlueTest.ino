@@ -11,8 +11,9 @@ char      bounce = 0;
 uint8_t   printed = 0;
 long      referenceTime;
 long      noAuthRefTime;
+bool      canSendPayload = true;
 bool      sendPayload = false;
-long      sendTime;
+long      payloadSendTime;
 char      authResponse[1 + (ID_SIZE / 8)];
 bool      sigFoxAnswerReady;
 bool      sigFoxAnswerAck;
@@ -39,7 +40,7 @@ void setup() {
   else
     SerialUSB.println("Nothing will be printed on the console unless asked otherwise");
   ledYellowTwoLight(LOW);
-  sendTime = 0;
+  payloadSendTime = 0;
 }
 
 // the loop function runs over and over again forever
@@ -75,9 +76,14 @@ void loop()
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));
   } else if (!safetyFirst.authIsActive && (millis() - 1000 * noAuthRefTime) > NO_AUTH_RESET_TIME * 60 * 1000)
     ft_resetSecurity();
-  if ((millis() - 1000 * sendTime) > SIGFOX_SEND_TIME * 60 * 1000 && sendPayload == true) {
+  if ((millis() - 1000 * payloadSendTime) > SIGFOX_SEND_TIME * 60 * 1000 && sendPayload == true) {
+    canSendPayload = true;
+  }
+  if (canSendPayload == true && sendPayload == true) {
+    SerialUSB.println("Sending payload !");
     ft_sigFoxSendPayload();
+    canSendPayload = false;
     sendPayload = false;
-    sendTime = millis() / 1000;
+    payloadSendTime = millis() / 1000;
   }
 }

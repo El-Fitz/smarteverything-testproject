@@ -50,7 +50,9 @@ void  ft_getInstruction(void) {
           i++;
           break;
         case 0x45:
+          SerialUSB.println("instruction: send payload !");
           sendPayload = true;
+          i++;
           break;
         default :
           i++;
