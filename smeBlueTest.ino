@@ -21,8 +21,7 @@ Payload   payload;
 Coms      downLink;
 Security  safetyFirst;
 
-// the setup function runs once when you press reset or power the board
-void setup() {
+void ft_initialize(void) {
   SerialUSB.begin(115200);
   Wire.begin();
   sfxAntenna.begin();
@@ -33,6 +32,11 @@ void setup() {
   ft_initDownLink;
   ft_initPayload(NULL);
   randomSeed(analogRead(0));
+}
+
+// the setup function runs once when you press reset or power the board
+void setup() {
+  ft_initialize();
   for (int wait = 0; !SerialUSB && wait < 60; wait++)
     ft_wasteTime(1000);
   if (!SerialUSB)
