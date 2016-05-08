@@ -26,7 +26,6 @@ void  ft_getInstruction(void) {
     smeBle.writeChar(0x21);
     instruction = ft_strsub(downLink.msg, safetyFirst.idLen, 0);
     smeBle.write(instruction, strlen(instruction));
-    ft_getData();
     for (int i = 0; i < strlen(instruction);) {
       switch (instruction[i]) {
         case 0x70:
