@@ -16,24 +16,26 @@ void  ft_setRTC(byte seconds, byte minutes, byte hours, byte day, byte months, b
 
 void  ft_updateTime()
 {
-  rightNow.seconds = getSeconds();
-  rightNow.minutes = getMinutes();
-  rightNow.hours = getHours();
-  rightNow.days = getDay();
-  rightNow.months = getMonth();
-  rightNow.years = getYear();
+  rightNow.seconds = rtc.getSeconds();
+  rightNow.minutes = rtc.getMinutes();
+  rightNow.hours = rtc.getHours();
+  rightNow.days = rtc.getDay();
+  rightNow.months = rtc.getMonth();
+  rightNow.years = rtc.getYear();
 }
 
 void  ft_timers(void)
 {
   ft_getData();
-  if (safetyFirst.authenticated && safetyFirst.authIsActive && (millis() - 1000 * referenceTime) > SECURITY_RESET_TIME * 1000) {
+  if (safetyFirst.authenticated && (millis() - 1000 * referenceTime) > SECURITY_RESET_TIME * 1000) {
     referenceTime = millis() / 1000;
     ft_resetSecurity();
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));
   } else if (!safetyFirst.authIsActive && (millis() - 1000 * noAuthRefTime) > NO_AUTH_RESET_TIME * 60 * 1000)
     ft_resetSecurity();
-  if ((millis() - 1000 * payloadSendTime) > SIGFOX_SEND_TIME * 60 * 1000 && sendPayload == true) {
+  if (rightNow.minutes % 10 == 0) {
     canSendPayload = true;
+  } else {
+    canSendPayload = false;
   }
 }

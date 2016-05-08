@@ -8,7 +8,7 @@ void ft_alarmInterrupt(void)
 
 void ft_enterSleep(void)
 {
-  attachInterrupt(alarmInterrupt);
+  attachInterrupt(ft_alarmInterrupt);
   ft_wasteTime(100);
   rtc.standbyMode();
 }
