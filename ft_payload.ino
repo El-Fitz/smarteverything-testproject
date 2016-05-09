@@ -1,6 +1,7 @@
 #include "Data.h"
 
 void   ft_initPayload(char *str) {
+  payload.receivedTimeSeed = 0;
   payload.humidity = 0;
   payload.temp = 0;
   payload.pressure = 0;

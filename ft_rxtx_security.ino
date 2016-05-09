@@ -32,6 +32,26 @@ void    ft_resetSecurity(void) {
   SerialUSB.println("reseting security");
 }
 
+void    ft_updateSeed(void) {
+  uint8_t   nulSeed;
+
+  nulSeed = 0;
+  if (!sigFoxAnswerAck)
+    return ;
+  for (uint8_t i = 0; i < 2; i++) {
+    if (payload.answer[i + 4] == 0)
+      nulSeed += 1;
+  }
+  if (!(nulSeed == 2)) {
+    for (uint8_t i = 0; i < 2; i++)
+      safetyFirst.seed[i] = payload.answer[i + 4];
+    if (payload.receivedTimeSeed == 0)
+      payload.receivedTimeSeed = 3;
+    else
+      payload.receivedTimeSeed = 1;
+  }
+}
+
 void    ft_getIDArray(uint64_t id) {
   uint64_t  mask = 0xFF;
   uint8_t   power = 0;

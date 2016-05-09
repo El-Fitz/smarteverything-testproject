@@ -15,8 +15,29 @@ void  ft_setTimer(byte seconds, byte minutes, byte hours, byte day, byte months,
   timer.payload = 0;
   timer.auth = 0;
   timer.noAuth = 0;
-  timer.getTime = 0;
-  timer.getSeed = 0;
+  timer.getTimeSeed = false;
+}
+
+void  ft_synchRTC(void) {
+  uint8_t   nulTime;
+  uint32_t  newTime;
+  uint8_t   newTimeArray[4];
+
+  nulTime = 0;
+  if (!sigFoxAnswerAck)
+    return ;
+  for (uint8_t i = 0; i < 4; i++) {
+    newTimeArray[i] = payload.answer[i];
+    if (newTimeArray[i] == 0)
+      nulTime += 1;
+  }
+  if (nulTime == 4)
+    payload.receivedTimeSeed = 0;
+  else {
+    //Something to convert this f*ing array into an uint32_t
+    rtc.setEpoch(newTime);
+    payload.receivedTimeSeed = 2;
+  }
 }
 
 void  ft_updateTime(void) {
@@ -27,10 +48,10 @@ void  ft_updateTime(void) {
     }
   }
   if (timer.days != rtc.getDay()) {
-    if (timer.getTime == 0)
-      timer.getTime = 1;
-    if (timer.getSeed = 0)
-      timer.getSeed = 1;
+    if (timer.getTimeSeed == false) {
+      timer.getTimeSeed = true;
+      payload.receivedTimeSeed = 0;
+    }
   }
   timer.seconds = rtc.getSeconds();
   timer.minutes = rtc.getMinutes();

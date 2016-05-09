@@ -16,6 +16,7 @@ volatile uint8_t  interrupted = 0;
 volatile uint8_t  canSleep = 0;
 uint8_t           printed = 0;
 bool              canSendPayload = true;
+bool              sendPayload = false;
 
 //Objects & Structures
 RTCZero   rtc;
@@ -26,7 +27,6 @@ Time      timer;
 
 //Random ComLink Stuff
 char      authResponse[1 + (ID_SIZE / 8)];
-bool      sigFoxAnswerReady;
 bool      sigFoxAnswerAck;
 
 void ft_initialize(void) {
@@ -66,15 +66,16 @@ void loop()
   else if (safetyFirst.authenticated || !safetyFirst.authIsActive)
     ft_getInstruction();
   ft_ledStatus();
-  if (sigFoxAnswerReady = sfxAntenna.hasSfxAnswer())
+  if (sfxAntenna.hasSfxAnswer()) {
     sigFoxAnswerAck = true;
+    ft_sigFoxReceiveAck();
+    ft_synchRTC();
+    ft_updateSeed();
+  }
   ft_timers();
-  if (canSendPayload == true) {
+  if (canSendPayload == true || sendPayload == true) {
     SerialUSB.println("Sending payload !");
     ft_sigFoxSendPayload();
-    canSendPayload = false;
-    sendPayload = false;
-    timer.payload = millis() / 1000;
   }
   interrupted = 0;
   if (canSleep == 1)

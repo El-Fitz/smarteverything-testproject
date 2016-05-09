@@ -22,11 +22,23 @@ int initFinish = 1;
     } while (initFinish!=3);
 }
 
-void ft_sigFoxSendPayload(void) {
+void  ft_sigFoxReceiveAck(void) {
+  byte  *answer = NULL;
+
+  if (sfxAntenna.getSfxError() == SME_SFX_OK) {
+      answer = (byte *)sfxAntenna.getLastReceivedMessage();
+      for (uint8_t i = 0; i < 8; i++)
+        payload.answer[i] = (uint8_t)answer[i];
+  } else
+    sigFoxAnswerAck = false;
+}
+
+void  ft_sigFoxSendPayload(void) {
   char  sigFoxPayload[sizeof(payload)];
+  byte  *answer;
   int   payloadLen;
   int   strLen;
-  
+
   sigFoxPayload[0] = (payload.humidity);
   sigFoxPayload[1] = (payload.temp);
   sigFoxPayload[2] = (payload.pressure);
@@ -36,8 +48,21 @@ void ft_sigFoxSendPayload(void) {
     sigFoxPayload[i + 3] = payload.str[i];
   sfxWakeup();
   ft_wasteTime(20);
-  sfxAntenna.sfxSendData(sigFoxPayload, strlen((char*)sigFoxPayload));
-  sigFoxAnswerAck = false;
+  sfxAntenna.sfxSendDataAck(sigFoxPayload, strlen((char*)sigFoxPayload), timer.getTimeSeed);
+  if (timer.getTimeSeed) {
+    for (uint8_t i = 0; i < 25 && !sfxAntenna.hasSfxAnswer(); i++)
+      ft_wasteTime(i * 1000);
+    if (sfxAntenna.hasSfxAnswer() && sfxAntenna.getSfxError() == SME_SFX_OK) {
+      answer = (byte *)sfxAntenna.getLastReceivedMessage();
+      for (uint8_t i = 0; i < 8; i++)
+        payload.answer[i] = (uint8_t)answer[i];
+    } else {
+      sigFoxAnswerAck = false;
+    }
+  }
+  
+  canSendPayload = false;
+  sendPayload = false;
 }
 
 void ft_sigFoxAnswerStatus(void) {
