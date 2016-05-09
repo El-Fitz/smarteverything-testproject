@@ -7,7 +7,7 @@ void  ft_buttons(void) {
     timer.noAuth = millis() / 1000;
   }
   if (isButtonTwoPressed())
-    sendPayload == true;
+    ledYellowOneLight(HIGH);
 }
 
 void  ft_ledStatus(void) {

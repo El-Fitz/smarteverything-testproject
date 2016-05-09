@@ -48,11 +48,6 @@ void  ft_getInstruction(void) {
           ft_resetSecurity();
           i++;
           break;
-        case 0x45:
-          SerialUSB.println("instruction: send payload !");
-          sendPayload = true;
-          i++;
-          break;
         default :
           i++;
           break;

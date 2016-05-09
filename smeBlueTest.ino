@@ -6,18 +6,16 @@
 
 # include "BlueTest.h"
 # define SECONDS  0
-# define MINUTES  0
+# define MINUTES  27
 # define HOURS    0
-# define DAYS     0
-# define MONTHS   0
-# define YEARS    0
-
+# define DAYS     10
+# define MONTHS   5
+# define YEARS    16
 // Flags
 volatile uint8_t  interrupted = 0;
 volatile uint8_t  canSleep = 0;
 uint8_t           printed = 0;
 bool              canSendPayload = true;
-bool              sendPayload = false;
 
 //Objects & Structures
 RTCZero   rtc;
@@ -71,7 +69,7 @@ void loop()
   if (sigFoxAnswerReady = sfxAntenna.hasSfxAnswer())
     sigFoxAnswerAck = true;
   ft_timers();
-  if (canSendPayload == true && sendPayload == true) {
+  if (canSendPayload == true) {
     SerialUSB.println("Sending payload !");
     ft_sigFoxSendPayload();
     canSendPayload = false;
