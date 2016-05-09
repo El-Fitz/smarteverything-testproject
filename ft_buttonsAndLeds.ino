@@ -4,7 +4,7 @@ void  ft_buttons(void) {
   if (isButtonOnePressed()) {
     safetyFirst.authIsActive = false;
     safetyFirst.idLen = 0;
-    noAuthRefTime = millis() / 1000;
+    timer.noAuth = millis() / 1000;
   }
   if (isButtonTwoPressed())
     sendPayload == true;

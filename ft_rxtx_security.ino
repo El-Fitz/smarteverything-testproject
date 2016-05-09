@@ -12,7 +12,7 @@ void    ft_initSecurity (void) {
   safetyFirst.idLen = ID_SIZE / 8;
   safetyFirst.authIsActive = true;
   safetyFirst.authenticated = false;
-  noAuthRefTime = 0;
+  timer.noAuth = 0;
   ledGreenLight(false);
   ledRedLight(true);
 }
@@ -27,7 +27,7 @@ void    ft_resetSecurity(void) {
   ledGreenLight(false);
   safetyFirst.authIsActive = true;
   safetyFirst.authenticated = false;
-  noAuthRefTime = 0;
+  timer.noAuth = 0;
   canSleep = 1;
   SerialUSB.println("reseting security");
 }
@@ -66,7 +66,7 @@ void    ft_establishComLink(void) {
     for (int i = 0; safetyFirst.idLen; i++)
       authResponse[i + 1] = safetyFirst.id[i];
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));
-    referenceTime = millis() / 1000;
+    timer.auth = millis() / 1000;
     }
   else {
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));

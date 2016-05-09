@@ -5,27 +5,26 @@
 */
 
 # include "BlueTest.h"
+# define SECONDS  0
+# define MINUTES  0
+# define HOURS    0
+# define DAYS     0
+# define MONTHS   0
+# define YEARS    0
 
 // Flags
-uint8_t   interrupted = 0;
-uint8_t   canSleep = 0;
-uint8_t   printed = 0;
-bool      canSendPayload = true;
-bool      sendPayload = false;
-
-//Timers
-long      referenceTime;
-long      noAuthRefTime;
-
-//Counters
-uint8_t   payloadTimer = 0;
+volatile uint8_t  interrupted = 0;
+volatile uint8_t  canSleep = 0;
+uint8_t           printed = 0;
+bool              canSendPayload = true;
+bool              sendPayload = false;
 
 //Objects & Structures
 RTCZero   rtc;
 Payload   payload;
 Coms      downLink;
 Security  safetyFirst;
-Time      rightNow;
+Time      timer;
 
 //Random ComLink Stuff
 char      authResponse[1 + (ID_SIZE / 8)];
@@ -43,7 +42,7 @@ void ft_initialize(void) {
   ft_initSecurity();
   ft_initDownLink;
   ft_initPayload(NULL);
-  ft_setRTC(seconds, minutes, hours, day, months, years)
+  ft_setTimer(SECONDS, MINUTES, HOURS, DAYS, MONTHS, YEARS);
   randomSeed(analogRead(0));
 }
 
@@ -57,12 +56,12 @@ void setup() {
   else
     SerialUSB.println("Nothing will be printed on the console unless asked otherwise");
   ledYellowTwoLight(LOW);
-  payloadSendTime = 0;
 }
 
 // the loop function runs over and over again forever
 void loop() 
-{ 
+{
+  ft_updateTime();
   ft_buttons();
   if (!safetyFirst.authenticated && safetyFirst.authIsActive)
     ft_establishComLink();
@@ -77,8 +76,9 @@ void loop()
     ft_sigFoxSendPayload();
     canSendPayload = false;
     sendPayload = false;
-    payloadSendTime = millis() / 1000;
+    timer.payload = millis() / 1000;
   }
+  interrupted = 0;
   if (canSleep == 1)
     ft_enterSleep();
 }

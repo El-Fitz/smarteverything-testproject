@@ -1,9 +1,9 @@
 #include "Data.h"
 
 void  ft_getData(void) {
-  payload.humidity[payloadTimer] = smeHumidity.readHumidity();
-  payload.temp[payloadTimer] = smeHumidity.readTemperature();
-  payload.pressure[payloadTimer] = smePressure.readPressure() - 1000;
+  payload.humidity = ft_movingAverage(timer.data, payload.humidity, smeHumidity.readHumidity());
+  payload.temp = ft_movingAverage(timer.data, payload.temp, smeHumidity.readTemperature());
+  payload.pressure = ft_movingAverage(timer.data, payload.pressure, smePressure.readPressure() - 1000);
 }
 
 void  ft_printData(uint8_t param) {

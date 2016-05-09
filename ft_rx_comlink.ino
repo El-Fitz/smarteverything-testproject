@@ -22,7 +22,7 @@ void  ft_getInstruction(void) {
   if (!ft_getStr())
     return ;
   if (downLink.type == 0x21 && (!safetyFirst.authIsActive || ft_checkID())) {
-    referenceTime = millis() / 1000;
+    timer.auth = millis() / 1000;
     smeBle.writeChar(0x21);
     instruction = ft_strsub(downLink.msg, safetyFirst.idLen, 0);
     smeBle.write(instruction, strlen(instruction));

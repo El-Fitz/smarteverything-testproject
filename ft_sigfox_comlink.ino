@@ -27,9 +27,9 @@ void ft_sigFoxSendPayload(void) {
   int   payloadLen;
   int   strLen;
   
-  sigFoxPayload[0] = mean(payload.humidity, 10);
-  sigFoxPayload[1] = mean(payload.temp);
-  sigFoxPayload[2] = mean(payload.pressure);
+  sigFoxPayload[0] = (payload.humidity);
+  sigFoxPayload[1] = (payload.temp);
+  sigFoxPayload[2] = (payload.pressure);
   payloadLen = sizeof(payload.str) / sizeof(payload.str[0]);
   strLen = sizeof(sigFoxPayload) / sizeof(sigFoxPayload[0]);
   for (int i = 0; i < payloadLen && i < strLen; i++)

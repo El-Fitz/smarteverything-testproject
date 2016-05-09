@@ -3,9 +3,9 @@
 
 typedef struct
 {
-  uint8_t     humidity[10];
-  uint8_t     temp[10];
-  uint8_t     pressure[10];
+  uint8_t     humidity;
+  uint8_t     temp;
+  uint8_t     pressure;
   char        str[8];
 }             Payload;
 
