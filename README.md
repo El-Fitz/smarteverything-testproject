@@ -92,9 +92,10 @@ While processing the instructions, the SME Board will send differents replies :
 
 ##Future Updates to be expected
 - DONE: Allow to authenticate withouth key (using button1). Similar to usual Bluetooth pairing
-- LIKELY DONE: Send payload through SigFox network
-- Sleep / low power function to save power (using SLEEP_MODE_PWR_DOWN with 8 seconds WatchDog Timers, while allowing wake up from Bluetooth interrupt). Might be activated by default or by pressing button2
-- Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
+- DONE: Send payload through SigFox network
+- WIP : Receive time and T-OTP daily seed (SigFox RSSI ?) through SigFox, once a day
+- WIP : Sleep / low power function to save power (using internal RTC, while allowing wake up from Bluetooth interrupt, if possible). Might be activated by default or by pressing button2
+- WIP : Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
 - Time-Based One-Time-Password Generator for Authentication (from https://github.com/damico/ARDUINO-OATH-TOKEN)
 - Encryption of the SigFox payload, most likely through a stream cypher algorithm in order to maintain the payload's size
 - Extend encryption to the Sigfox Downlink
