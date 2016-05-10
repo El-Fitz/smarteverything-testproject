@@ -42,8 +42,8 @@ void        ft_getKey(void);
 uint8_t     ft_getStr(void);
 void        ft_establishComLink(void);
 void        ft_getInstruction(void);
-void        ft_sigFoxReceiveAck(void);
-void        ft_sigFoxSendPayload(void);
+void        ft_sigFoxRx(void);
+void        ft_sigFoxTx(void);
 int         ft_bleSendData(char type);
 
 #endif

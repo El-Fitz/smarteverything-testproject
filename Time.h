@@ -11,8 +11,8 @@ typedef struct
   byte        months;
   byte        years;
   bool        getTimeSeed;
-  uint8_t     data;
-  uint8_t     payload;
+  bool        getData;
+  uint8_t     payloadData;
   uint8_t     auth;
   uint8_t     noAuth;
 }             Time;

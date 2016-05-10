@@ -36,7 +36,7 @@ void    ft_updateSeed(void) {
   uint8_t   nulSeed;
 
   nulSeed = 0;
-  if (!sigFoxAnswerAck)
+  if (!sigFoxAnswer)
     return ;
   for (uint8_t i = 0; i < 2; i++) {
     if (payload.answer[i + 4] == 0)
@@ -45,7 +45,7 @@ void    ft_updateSeed(void) {
   if (!(nulSeed == 2)) {
     for (uint8_t i = 0; i < 2; i++)
       safetyFirst.seed[i] = payload.answer[i + 4];
-    if (payload.receivedTimeSeed == 0)
+    if (payload.receivedTimeSeed == 4)
       payload.receivedTimeSeed = 3;
     else
       payload.receivedTimeSeed = 1;

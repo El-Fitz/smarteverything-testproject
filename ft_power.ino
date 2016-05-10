@@ -3,12 +3,12 @@
 void ft_alarmInterrupt(void)
 {
   interrupted = 1;
-  detachInterrupt(0);
+  rtc.detachInterrupt();
 }
 
 void ft_enterSleep(void)
 {
-  attachInterrupt(0, ft_alarmInterrupt, LOW);
+  rtc.attachInterrupt(ft_alarmInterrupt);
   ft_wasteTime(100);
   rtc.standbyMode();
 }

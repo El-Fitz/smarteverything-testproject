@@ -1,9 +1,11 @@
 #include "Data.h"
 
 void  ft_getData(void) {
-  payload.humidity = ft_movingAverage(timer.data, payload.humidity, smeHumidity.readHumidity());
-  payload.temp = ft_movingAverage(timer.data, payload.temp, smeHumidity.readTemperature());
-  payload.pressure = ft_movingAverage(timer.data, payload.pressure, smePressure.readPressure() - 1000);
+  SerialUSB.println("Getting Data");
+  payload.humidity = ft_movingAverage(timer.payloadData, payload.humidity, smeHumidity.readHumidity());
+  payload.temp = ft_movingAverage(timer.payloadData, payload.temp, smeHumidity.readTemperature());
+  payload.pressure = ft_movingAverage(timer.payloadData, payload.pressure, smePressure.readPressure() - 1000);
+  timer.getData = false;
 }
 
 void  ft_printData(uint8_t param) {

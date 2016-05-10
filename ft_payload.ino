@@ -1,18 +1,16 @@
 #include "Data.h"
 
-void   ft_initPayload(char *str) {
-  payload.receivedTimeSeed = 0;
+void   ft_initPayload(void) {
+  char  str[7] = {'H', 'e', 'l', 'l', 'o', ' ', '!'};
+  
+  payload.receivedTimeSeed = 4;
   payload.humidity = 0;
   payload.temp = 0;
   payload.pressure = 0;
-  for (int i = 0; i < 8; i++)
-    payload.str[i] = '\0';
-  for (int i = 0; str && (i < 8); i++)
+  for (int i = 0; i < STRLEN; i++)
     payload.str[i] = str[i];
-  if (str) {
-    free(str);
-    str = NULL;
-  }
+  SerialUSB.print("payload.str : ");
+  SerialUSB.println(payload.str);
 }
 
 short int  ft_selectPayload(char c) {
@@ -39,6 +37,6 @@ void      ft_write(char *str)
 void    ft_freePayload(void) {
   payload.humidity = 0;
   payload.temp = 0;
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < STRLEN; i++)
     payload.str[i] = '\0'; 
 }

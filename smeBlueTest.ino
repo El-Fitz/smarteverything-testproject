@@ -5,18 +5,19 @@
 */
 
 # include "BlueTest.h"
-# define SECONDS  0
+# define SECONDS  00
 # define MINUTES  27
-# define HOURS    0
+# define HOURS    18
 # define DAYS     10
 # define MONTHS   5
 # define YEARS    16
+
 // Flags
 volatile uint8_t  interrupted = 0;
 volatile uint8_t  canSleep = 0;
 uint8_t           printed = 0;
-bool              canSendPayload = true;
-bool              sendPayload = false;
+volatile bool     canSendPayload = true;
+volatile bool     sendPayload = true;
 
 //Objects & Structures
 RTCZero   rtc;
@@ -27,7 +28,7 @@ Time      timer;
 
 //Random ComLink Stuff
 char      authResponse[1 + (ID_SIZE / 8)];
-bool      sigFoxAnswerAck;
+bool      sigFoxAnswer;
 
 void ft_initialize(void) {
   SerialUSB.begin(115200);
@@ -38,16 +39,20 @@ void ft_initialize(void) {
   smePressure.begin();
   rtc.begin();
   ft_initSecurity();
-  ft_initDownLink;
-  ft_initPayload(NULL);
+  ft_initDownLink();
+  ft_initPayload();
   ft_setTimer(SECONDS, MINUTES, HOURS, DAYS, MONTHS, YEARS);
   randomSeed(analogRead(0));
+  sfxAntenna.setSfxFactoryReset();
+  ft_wasteTime(1000);
+  sfxAntenna.setSfxDataMode();
+  ft_wasteTime(1000);
 }
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   ft_initialize();
-  for (int wait = 0; !SerialUSB && wait < 60; wait++)
+  for (int wait = 0; !(SerialUSB) && wait < 60; wait++)
     ft_wasteTime(1000);
   if (!SerialUSB)
     ledYellowOneLight(LOW);
@@ -66,18 +71,19 @@ void loop()
   else if (safetyFirst.authenticated || !safetyFirst.authIsActive)
     ft_getInstruction();
   ft_ledStatus();
-  if (sfxAntenna.hasSfxAnswer()) {
-    sigFoxAnswerAck = true;
-    ft_sigFoxReceiveAck();
-    ft_synchRTC();
-    ft_updateSeed();
-  }
-  ft_timers();
-  if (canSendPayload == true || sendPayload == true) {
+  if (canSendPayload || sendPayload) {
     SerialUSB.println("Sending payload !");
-    ft_sigFoxSendPayload();
+    ft_sigFoxTx();
   }
+  //if (timer.getTimeSeed) {
+  //  sigFoxAnswer = true;
+  //  ft_sigFoxRx();
+  //  ft_synchRTC();
+  //  ft_updateSeed();
+  //}
+  ft_timers();
   interrupted = 0;
-  if (canSleep == 1)
-    ft_enterSleep();
+  //if (canSleep == 1)
+  //  ft_enterSleep();
+  ft_wasteTime(10000);
 }
