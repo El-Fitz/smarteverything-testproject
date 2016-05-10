@@ -93,6 +93,7 @@ While processing the instructions, the SME Board will send differents replies :
 ##Future Updates to be expected
 - DONE: Allow to authenticate withouth key (using button1). Similar to usual Bluetooth pairing
 - DONE: Send payload through SigFox network
+- WIP : Use RTC to automatically collect sensors' data and send it through SigFox
 - WIP : Receive time and T-OTP daily seed (SigFox RSSI ?) through SigFox, once a day
 - WIP : Sleep / low power function to save power (using internal RTC, while allowing wake up from Bluetooth interrupt, if possible). Might be activated by default or by pressing button2
 - WIP : Connect to SigFox network on startup and request time, in order to update it accordingly for the T-OTP
