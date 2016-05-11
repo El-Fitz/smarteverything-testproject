@@ -1,4 +1,4 @@
-#include "ComLink.h"
+#include "ComLinkBle.h"
 
 void    ft_initDownLink (void) {
   downLink.type = 0x00;

@@ -1,4 +1,4 @@
-#include "ComLink.h"
+#include "ComLinkBle.h"
 
 int        ft_bleSendData(char type) {
   uint8_t x;

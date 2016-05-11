@@ -1,4 +1,4 @@
-#include "ComLink.h"
+#include "ComLinkBle.h"
 
 void    ft_initSecurity (void) {
   safetyFirst.authResponse[0] = 0x65;
@@ -73,7 +73,7 @@ bool    ft_checkID(void) {
 void    ft_establishComLink(void) {
   uint64_t id;
   
-  if (!ft_getStr())
+  if (!ft_bleGetStr())
     return ;
   ft_resetSecurity();
   if (downLink.type == 0x4b && !safetyFirst.authenticated) {

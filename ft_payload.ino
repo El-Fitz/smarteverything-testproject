@@ -1,12 +1,13 @@
 #include "Data.h"
 
 void   ft_initPayload(void) {
-  char  str[7] = {'H', 'e', 'l', 'l', 'o', ' ', '!'};
+  char  str[STRLEN] = {'H', 'e', 'l', 'l', 'o', ' ', '!', '\0'};
   
   payload.receivedTimeSeed = 4;
   payload.humidity = 0;
   payload.temp = 0;
   payload.pressure = 0;
+  payload.answer = NULL;
   for (int i = 0; i < STRLEN; i++)
     payload.str[i] = str[i];
   SerialUSB.print("payload.str : ");

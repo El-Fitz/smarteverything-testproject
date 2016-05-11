@@ -1,4 +1,21 @@
-#include "ComLink.h"
+#include "ComLinkSfx.h"
+
+uint8_t ft_sfxGetStr(void) {
+  ft_strfree(payload.answer);
+  ft_wasteTime(20);
+  for (int i = 0; i < 8; i++) {
+    if (smeBle.available()) {
+      payload.answer = ft_scj(payload.answer, smeBle.read());
+      i++;
+    } else {
+      ft_wasteTime(10);
+      i++;
+    }
+  }
+  if (!payload.answer)
+    return (0);
+  return (1);
+}
 
 void  ft_sigFoxRx(void) {
   byte  *answer = NULL;
@@ -23,27 +40,4 @@ void  ft_sigFoxRx(void) {
     SerialUSB.println("Nothing Received");
     sigFoxAnswer = false;
   }
-}
-
-void  ft_sigFoxTx(void) {
-  char  sigFoxPayload[12];
-  
-  sigFoxPayload[0] = payload.receivedTimeSeed;
-  sigFoxPayload[1] = payload.humidity;
-  sigFoxPayload[2] = payload.temp;
-  sigFoxPayload[3] = payload.pressure;
-  for (int i = 0; i + 4 < 12 && i < STRLEN; i++)
-    sigFoxPayload[i + 4] = payload.str[i];
-  sfxWakeup();
-  ft_wasteTime(100);
-  SerialUSB.print("sfxAntenna.getSfxMode : ");
-  SerialUSB.print(sfxAntenna.getSfxMode());
-  SerialUSB.print("\tgetTimeSeed : ");
-  SerialUSB.println(timer.getTimeSeed);
-  //sfxAntenna.sfxSendDataAck(sigFoxPayload, 12, timer.getTimeSeed)
-  sfxAntenna.sfxSendData(sigFoxPayload, 12);
-  SerialUSB.print("sfxAntenna.getSfxMode : ");
-  SerialUSB.println(sfxAntenna.getSfxMode());
-  canSendPayload = false;
-  sendPayload = false;
 }

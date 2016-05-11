@@ -1,5 +1,5 @@
-#ifndef COMLINK_H
-# define COMLINK_H
+#ifndef COMLINKBLE_H
+# define COMLINKBLE_H
 # define SEED_SIZE 2            // Daily key generation seed size, in bytes
 # define KEY_SIZE 6             // Session key connection size, in bytes
 # define ID_SIZE 32             // Random session ID size, in bits
@@ -27,7 +27,7 @@ typedef struct
   char      *msg;
 }           Coms;
 
-void        ft_sigFoxConfig(void);
+
 void        ft_initSecurity (void);
 void        ft_resetSecurity(void);
 void        ft_updateSeed(void);
@@ -39,11 +39,9 @@ uint8_t     ft_isValidType(char c);
 uint8_t     ft_getMsgType(void);
 uint8_t     ft_getMsgSize(void);
 void        ft_getKey(void);
-uint8_t     ft_getStr(void);
+uint8_t     ft_bleGetStr(void);
 void        ft_establishComLink(void);
 void        ft_getInstruction(void);
-void        ft_sigFoxRx(void);
-void        ft_sigFoxTx(void);
 int         ft_bleSendData(char type);
 
 #endif

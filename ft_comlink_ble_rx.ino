@@ -1,6 +1,6 @@
-#include "ComLink.h"
+#include "ComLinkBle.h"
 
-uint8_t ft_getStr(void) {
+uint8_t ft_bleGetStr(void) {
   ft_resetDownLink();
   if (!ft_getMsgType() || !ft_getMsgSize())
     return (0);
@@ -19,7 +19,7 @@ uint8_t ft_getStr(void) {
 void  ft_getInstruction(void) {
   char          *instruction = NULL;
 
-  if (!ft_getStr())
+  if (!ft_bleGetStr())
     return ;
   if (downLink.type == 0x21 && (!safetyFirst.authIsActive || ft_checkID())) {
     timer.auth = millis() / 1000;

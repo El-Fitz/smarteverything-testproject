@@ -1,6 +1,6 @@
 #ifndef DATA_H
 # define DATA_H
-# define STRLEN 7
+# define STRLEN 8
 // if neither Time and Seed have been received, receivedTimeSeed is set to 4
 // if both Time and Seed have been received, receivedTimeSeed is set to 1
 // if only Time has been received, receivedTimeSeed is set to 2
@@ -12,7 +12,7 @@ typedef struct
   uint8_t     humidity;
   uint8_t     temp;
   uint8_t     pressure;
-  uint8_t     answer[8];
+  char        *answer;
   char        str[STRLEN];
 }             Payload;
 

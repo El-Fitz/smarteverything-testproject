@@ -8,7 +8,8 @@
 # include <LPS25H.h>
 # include <SmeSFX.h>
 # include <cc2541.h>
-# include "ComLink.h"
+# include "ComLinkBle.h"
+# include "ComLinkSfx.h"
 # include "Data.h"
 # include "Power.h"
 # include "Time.h"
