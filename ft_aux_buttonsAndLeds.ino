@@ -4,10 +4,19 @@ void  ft_buttons(void) {
   if (isButtonOnePressed()) {
     safetyFirst.authIsActive = false;
     safetyFirst.idLen = 0;
-    timer.noAuth = millis() / 1000;
+    timer.noAuth = timer.epoch;
   }
   if (isButtonTwoPressed())
     ledYellowOneLight(HIGH);
+}
+
+void  ft_blinkGreen(void) {
+  for (int i = 0; i < 10; i++) {
+    ft_wasteTime(100);
+    ledGreenLight(HIGH);
+    ft_wasteTime(100);
+    ledGreenLight(LOW);
+  }
 }
 
 void  ft_ledStatus(void) {

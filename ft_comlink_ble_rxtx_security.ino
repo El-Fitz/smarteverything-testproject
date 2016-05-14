@@ -25,6 +25,7 @@ void    ft_resetSecurity(void) {
   }
   ledRedLight(true);
   ledGreenLight(false);
+  safetyFirst.idLen = ID_SIZE / 8;
   safetyFirst.authIsActive = true;
   safetyFirst.authenticated = false;
   timer.noAuth = 0;
@@ -86,7 +87,7 @@ void    ft_establishComLink(void) {
     for (int i = 0; safetyFirst.idLen; i++)
       authResponse[i + 1] = safetyFirst.id[i];
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));
-    timer.auth = millis() / 1000;
+    timer.auth = timer.epoch;
     }
   else {
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));

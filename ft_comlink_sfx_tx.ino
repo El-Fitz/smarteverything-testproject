@@ -17,7 +17,8 @@ static bool   ft_sigFoxSendData(uint8_t *sfxPayload, bool ack) {
     SigFox.print(1);
   else
     SigFox.print(0);
-  while(!SigFox.available()) {
+  SerialUSB.println("SigFox sent");
+  for (int count = 0; count < 10 && !SigFox.available(); count++) {
     ft_wasteTime(100);
   }
   if (ft_sfxGetStr() == 1 && payload.answer[0] == 'O')

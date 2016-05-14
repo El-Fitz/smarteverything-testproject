@@ -4,8 +4,10 @@ uint8_t ft_sfxGetStr(void) {
   ft_strfree(payload.answer);
   ft_wasteTime(20);
   for (int i = 0; i < 8; i++) {
-    if (smeBle.available()) {
-      payload.answer = ft_scj(payload.answer, smeBle.read());
+    if (SigFox.available()) {
+      payload.answer = ft_scj(payload.answer, SigFox.read());
+      SerialUSB.print("Answer : ");
+      SerialUSB.println(payload.answer);
       i++;
     } else {
       ft_wasteTime(10);

@@ -16,6 +16,7 @@
 
 void        ft_buttons(void);
 void        ft_ledStatus(void);
+void        ft_blinkGreen(void);
 void        ft_USBputStr(char *str);
 void        ft_strfree(char *str);
 char        *ft_strnew(size_t size);

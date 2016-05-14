@@ -1,6 +1,6 @@
 #include "Time.h"
 
-void  ft_setTimer(byte seconds, byte minutes, byte hours, byte day, byte months, byte years) {
+void  ft_setTimer(byte seconds, byte minutes, byte hours, byte day, byte months, byte years, uint32_t epochTime) {
   rtc.setTime(hours, minutes, seconds);
   timer.seconds = seconds;
   timer.minutes = minutes;
@@ -10,6 +10,8 @@ void  ft_setTimer(byte seconds, byte minutes, byte hours, byte day, byte months,
   timer.months = months;
   timer.years = years;
   rtc.setAlarmSeconds(00);
+  rtc.setEpoch(epochTime);
+  timer.epoch = epochTime;
   rtc.enableAlarm(rtc.MATCH_SS);
   timer.payloadData = 1;
   timer.auth = 0;
@@ -42,15 +44,25 @@ void  ft_synchRTC(void) {
 }
 
 void  ft_updateTime(void) {
+  byte  tempSeconds;
   byte  tempMinutes;
   byte  tempDays;
   
-  timer.seconds = rtc.getSeconds();
+  tempSeconds = rtc.getSeconds();
   tempMinutes = rtc.getMinutes();
   timer.hours = rtc.getHours();
   tempDays = rtc.getDay();
   timer.months = rtc.getMonth();
   timer.years = rtc.getYear();
+  if (timer.seconds != tempSeconds) {
+    //SerialUSB.print("Hours: ");
+    //SerialUSB.print(timer.hours);
+    //SerialUSB.print("\tMinutes: ");
+    //SerialUSB.print(timer.minutes);
+    //SerialUSB.print("\tSeconds: ");
+    //SerialUSB.println(timer.seconds);
+    timer.seconds = tempSeconds;
+  }
   if (timer.minutes != tempMinutes) {
     timer.getData = true;
     timer.payloadData += 1;
@@ -70,22 +82,16 @@ void  ft_updateTime(void) {
     }
     timer.days = tempDays;
   }
-  SerialUSB.print("Hours: ");
-  SerialUSB.print(timer.hours);
-  SerialUSB.print("\tMinutes: ");
-  SerialUSB.print(timer.minutes);
-  SerialUSB.print("\tSeconds: ");
-  SerialUSB.println(timer.seconds);
 }
 
 void  ft_timers(void) {
   if (timer.getData)
     ft_getData();
-  if (safetyFirst.authenticated && (millis() - 1000 * timer.auth) > SECURITY_RESET_TIME * 1000) {
-    timer.auth = millis() / 1000;
+  if (safetyFirst.authenticated && (timer.epoch - timer.auth) > SECURITY_RESET_TIME) {
+    timer.auth = timer.epoch / 60;
     ft_resetSecurity();
     smeBle.write(authResponse, 1 + (ID_SIZE / 8));
-  } else if (!safetyFirst.authIsActive && (millis() - 1000 * timer.noAuth) > NO_AUTH_RESET_TIME * 60 * 1000)
+  } else if (!safetyFirst.authIsActive && (timer.epoch - timer.noAuth) > NO_AUTH_RESET_TIME * 60)
     ft_resetSecurity();
   if (payload.receivedTimeSeed == 1)
     timer.getTimeSeed == false;

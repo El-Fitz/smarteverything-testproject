@@ -11,6 +11,7 @@
 # define DAYS     10
 # define MONTHS   5
 # define YEARS    16
+# define EPOCH    1462955899
 
 // Flags
 volatile uint8_t  interrupted = 0;
@@ -41,7 +42,7 @@ void ft_initialize(void) {
   ft_initSecurity();
   ft_initDownLink();
   ft_initPayload();
-  ft_setTimer(SECONDS, MINUTES, HOURS, DAYS, MONTHS, YEARS);
+  ft_setTimer(SECONDS, MINUTES, HOURS, DAYS, MONTHS, YEARS, EPOCH);
   randomSeed(analogRead(0));
   sfxAntenna.setSfxFactoryReset();
   ft_wasteTime(1000);
@@ -68,13 +69,13 @@ void loop()
   ft_buttons();
   if (!safetyFirst.authenticated && safetyFirst.authIsActive)
     ft_establishComLink();
-  else if (safetyFirst.authenticated || !safetyFirst.authIsActive)
+  if (safetyFirst.authenticated || !safetyFirst.authIsActive)
     ft_getInstruction();
   ft_ledStatus();
-  if (canSendPayload || sendPayload) {
-    SerialUSB.println("Sending payload !");
-    ft_sigFoxTx();
-  }
+  //if (canSendPayload || sendPayload) {
+  //  SerialUSB.println("Sending payload !");
+  //  ft_sigFoxTx();
+  //}
   //if (timer.getTimeSeed) {
   //  sigFoxAnswer = true;
   //  ft_sigFoxRx();
@@ -85,5 +86,5 @@ void loop()
   interrupted = 0;
   //if (canSleep == 1)
   //  ft_enterSleep();
-  ft_wasteTime(10000);
+  //ft_wasteTime(10000);
 }

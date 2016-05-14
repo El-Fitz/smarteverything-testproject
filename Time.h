@@ -4,17 +4,19 @@
 
 typedef struct
 {
+  
   byte        seconds;
   byte        minutes;
   byte        hours;
   byte        days;
   byte        months;
   byte        years;
+  uint32_t    epoch;
   bool        getTimeSeed;
   bool        getData;
   uint8_t     payloadData;
-  uint8_t     auth;
-  uint8_t     noAuth;
+  uint32_t    auth;
+  uint32_t    noAuth;
 }             Time;
 
 void  ft_setTimer(byte seconds, byte minutes, byte hours, byte day, byte months, byte years);
